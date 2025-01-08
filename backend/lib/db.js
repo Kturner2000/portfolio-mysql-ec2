@@ -1,25 +1,26 @@
-require("dotenv").config();
-const AWS = require("aws-sdk");
+const mysql = require('mysql2');
+require('dotenv').config();  // to load the .env file
 
-const signer = new AWS.RDS.Signer();
 
-const dbConfig = {
-    host: process.env.RDS_ENDPOINT,
-    user: process.env.DB_IAM_USER,
+
+// Create a connection pool (for better performance with multiple queries)
+const pool = mysql.createPool({
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
-    ssl: {
-        rejectUnauthorized: true,
-        ca: "Amazon RDS", // Use Amazon RDS CA certificate for SSL
-    },
-    authPlugins: {
-        mysql_clear_password: () => () =>
-            signer.getAuthToken({
-                region: process.env.REGION,
-                hostname: process.env.RDS_ENDPOINT,
-                port: process.env.DB_PORT,
-                username: process.env.DB_IAM_USER,
-            }),
-    },
-};
+    waitForConnections: true,
+    connectionLimit: 10,
+    queueLimit: 0
+});
 
-module.exports = dbConfig;
+pool.promise().query('SELECT 1')
+  .then(() => {
+    console.log('Successfully connected to the database.');
+  })
+  .catch(err => {
+    console.error('Error connecting to the database:', err.message);
+  });
+
+// Export the pool for use in models or controllers
+module.exports = pool.promise();  // Using promise-based methods for async/await

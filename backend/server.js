@@ -1,26 +1,21 @@
-const express = require("express");
-const mysql = require("mysql2");
-const cors = require("cors");
-
-require("dotenv").config();
-const dbConfig = require("./lib/db.js");
-
+const express = require('express');
 const app = express();
+const cors = require('cors');
+// const bodyParser = require('body-parser');
+const userRoutes = require('./routes/userRoutes');
+require('dotenv').config();
+const db = require('./lib/db');  // Import the database connection pool
+
+
+// Middleware
 app.use(cors());
-app.use(express.json());
+// app.use(bodyParser.json());
 
-const DB_PORT = process.env.PORT || 3000;
+// Routes
+app.use('/api', userRoutes);
 
-const db = mysql.createConnection(dbConfig);
-
-db.connect((err) => {
-    if (err) {
-        console.error("Error connecting to MySQL:", err);
-        return;
-    }
-    console.log("Connected to MySQL database");
-});
-
-app.listen(DB_PORT, () => {
-    console.log(`Server running on port ${DB_PORT}`);
+// Start server
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });
