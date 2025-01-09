@@ -1,6 +1,6 @@
 const userModel = require('../models/User.model');
 const generateToken = require('../lib/utils')
-const bcrypt = require('bcryptjs'); 
+const bcyrpt = require('bcryptjs'); 
 
 
 // create a user
@@ -52,6 +52,9 @@ const signup = async (req, res) => {
 const getAllUsers = async (req, res) => {
   try {
     const users = await userModel.getUsers();
+    if(users.length === 0) {
+        console.log('no users')
+    } 
     console.log(users)
     res.json(users);
   } catch (err) {

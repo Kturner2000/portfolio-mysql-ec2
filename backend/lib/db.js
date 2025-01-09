@@ -1,5 +1,5 @@
 const mysql = require('mysql2');
-require('dotenv').config();  // to load the .env file
+require('dotenv').config({ path: './.local.env' });  // to load the .env file
 
 
 
