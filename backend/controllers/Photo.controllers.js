@@ -98,6 +98,27 @@ const getPhotosByCategory = async (req, res) => {
       }
 }
 
+const getPhotoById = async (req, res) => {
+    const { id } = req.params;
+
+    if (!id || isNaN(id)) {
+        return res.status(400).json({ message: 'Id is required' });
+    }
+
+    try {
+        const photo = await photoModel.getPhotoById(id);
+
+        if (!photo) {
+            return res.status(404).json({ message: 'Photo not found' });
+        }
+
+        res.json(photo);
+      } catch (err) {
+        console.error('Error fetching photo:', err);  // Added error logging
+        res.status(500).json({ message: 'Server Error' });  // Changed to send JSON response
+      }
+}
 
 
-module.exports = {getAllPhotos, uploadPhoto, getPhotosByCategory}
+
+module.exports = {getAllPhotos, uploadPhoto, getPhotosByCategory, getPhotoById}

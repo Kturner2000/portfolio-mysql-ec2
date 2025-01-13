@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const photoController = require('../controllers/Photo.controllers');
-const upload = require('../middleware/multer')
 
 router.get('/test', (req, res) => {
     res.send('Test route working');
@@ -9,8 +8,8 @@ router.get('/test', (req, res) => {
   
 router.get('/photos', photoController.getAllPhotos);
 router.post('/photos/upload', photoController.uploadPhoto);
-router.get('/photos/:category', photoController.getPhotosByCategory)
-// router.get('/photos/:id', photoController.getPhotoById);
+router.get('/photos/category/:category', photoController.getPhotosByCategory)
+router.get('/photos/:id', photoController.getPhotoById);
 
 
 

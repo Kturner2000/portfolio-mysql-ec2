@@ -5,7 +5,7 @@ const getAllPhotos = async () => {
     const [rows, fields] = await db.execute('SELECT * FROM photographs');
     return rows;
   } catch (err) {
-    throw new Error('Error fetching users: ' + err.message);
+    throw new Error('Error fetching photos: ' + err.message);
   }
 };
 
@@ -20,7 +20,7 @@ const uploadPhoto = async ({src, alt, category} ) => {
     return result
   
   } catch (err) {
-    throw new Error('Error creating user: ' + err.message);
+    throw new Error('Error uploading photo: ' + err.message);
   }
 }
 
@@ -29,9 +29,18 @@ const getPhotosByCategory = async(category) => {
     const [rows, fields] = await db.execute('SELECT * FROM photographs WHERE category = ?', [category]);
     return rows;
   } catch (err) {
-    throw new Error('Error fetching users: ' + err.message);
+    throw new Error('Error fetching photos: ' + err.message);
+  }
+}
+
+const getPhotoById = async(id) => {
+  try {
+    const [rows, fields] = await db.execute('SELECT * FROM photographs WHERE id = ?', [id]);
+    return rows[0];
+  } catch (err) {
+    throw new Error('Error fetching photo: ' + err.message);
   }
 }
 
 
-module.exports = {getAllPhotos, uploadPhoto, getPhotosByCategory}
+module.exports = {getAllPhotos, uploadPhoto, getPhotosByCategory, getPhotoById}
