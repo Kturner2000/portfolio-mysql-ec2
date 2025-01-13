@@ -46,19 +46,20 @@ const findUserByEmail = async (email) => {
       return rows[0] || null; // Return the first user or null if not found
     } catch (err) {
       console.error('Error finding user by id:', err.message);
-    throw new Error('Error finding user by id: ' + err.message);}
+      throw err; 
+    }
     
   };
 
   const deleteUserById = async (id) => {
     try {
-      const [result ] = await db.execute('DELETE * FROM users WHERE id = ?', [id]);
+      const [result] = await db.execute('DELETE FROM users WHERE id = ?', [id]);
       if (result.affectedRows === 0) {
         throw new Error('No user found with the given id');
       } 
       return { message: 'User deleted successfully' };
     } catch (error){
-      throw new Error('Error deleting user: ' + err.message);
+      throw new Error('Error deleting user: ' + error.message);
     }
   }
 
