@@ -1,13 +1,24 @@
 const userModel = require('../models/User.model');
 const generateToken = require('../lib/utils')
-const bcyrpt = require('bcryptjs'); 
+const bcrypt = require('bcryptjs'); 
 
+// Get all users
+const getAllUsers = async (req, res) => {
+  try {
+    const users = await userModel.getAllUsers();
+    
+   
+    res.json(users);
+  } catch (err) {
+    res.status(500).send('Server Error');
+  }
+};
 
 // create a user
-const signup = async (req, res) => {
+const createUser = async (req, res) => {
     const { email, password, first_name, last_name } = req.body;
     try {
-        if ( !email || !password || !first_name || last_name) {
+        if ( !email || !password || !first_name || !last_name) {
             return res.status(400).json({ message: "All fields are required" });
         }
         // check if password is long enough
@@ -17,19 +28,34 @@ const signup = async (req, res) => {
                 .json({ message: "Password must be at least 8 characters" });
         }
 
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+          return res.status(400).json({ message: "Invalid email format" });
+      }
+
         // check if email already exists
         const user = await userModel.findUserByEmail(email);
+
         if (user)
             return res
                 .status(400)
                 .json({ message: "Email already registered" });
 
-        //  hashing a plain text password plus a salt, the hash algorithm’s output is no longer predictable.
-        //A salt is a random string
-        const salt = await bcyrpt.genSalt(10);
+                
+        
         //hash password
-        const hashedPassword = await bcrypt.hash(password, salt);        
-        const newUser = await userModel.createUser(email, hashedPassword, first_name, last_name);
+        const hashedPassword = await bcrypt.hash(password, 10); 
+        
+        
+       console.log({email, hashedPassword, first_name, last_name})
+        
+        const newUser = await userModel.createUser({
+          email,
+          password: hashedPassword,
+          first_name,
+          last_name
+        });
+        console.log(newUser)
+
         if (newUser) {
             //generate jwt token
             generateToken(newUser.id, res);
@@ -48,19 +74,6 @@ const signup = async (req, res) => {
     }
 };
 
-// Get all users
-const getAllUsers = async (req, res) => {
-  try {
-    const users = await userModel.getUsers();
-    if(users.length === 0) {
-        console.log('no users')
-    } 
-    console.log(users)
-    res.json(users);
-  } catch (err) {
-    res.status(500).send('Server Error');
-  }
-};
 
 // Get a user by ID
 const getUserById = async (req, res) => {
@@ -76,4 +89,15 @@ const getUserById = async (req, res) => {
   }
 };
 
-module.exports = { getAllUsers, getUserById, signup };
+const deleteUserById = async (req, res) => {
+  const { id } = req.params;
+  try {
+    await userModel.deleteUserById(id);
+    
+    res.json({message: 'User deleted successfully'});
+  } catch (err) {
+    res.status(500).send('Server Error');
+  }
+};
+
+module.exports = { getAllUsers, createUser ,getUserById, deleteUserById };

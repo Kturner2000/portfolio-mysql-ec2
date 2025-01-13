@@ -2,9 +2,12 @@ const jwt = require("jsonwebtoken");
 
 async function generateToken(userId, res) {
     //sign({payload}, secret key, options)
-    const token = jwt.sign({ userId }, process.env.JWT_SECRET, {
-        expiresIn: "7d",
-    });
+    try {
+        token = jwt.sign({ userId }, process.env.JWT_SECRET, { expiresIn: "7d" });
+      } catch (err) {
+        console.error("Error generating JWT:", err.message);
+        throw new Error("Could not generate token");
+      }
 
     //By setting this cookie, you enable the client
     //  (e.g., a web browser) to store it and send it back with subsequent requests.
