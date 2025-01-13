@@ -78,10 +78,19 @@ const uploadPhoto = async (req, res) => {
 }
 
 const getPhotosByCategory = async (req, res) => {
-    const { category } = req.body;
+    const { category } = req.params;
+
+    if (!category) {
+        return res.status(400).json({ message: 'Category is required' });
+    }
 
     try {
         const photos = await photoModel.getPhotosByCategory(category);
+
+        if (photos.length === 0) {
+            return res.status(404).json({ message: 'No photos found for this category' });
+        }
+
         res.json(photos);
       } catch (err) {
         console.error('Error fetching photos:', err);  // Added error logging
@@ -91,4 +100,4 @@ const getPhotosByCategory = async (req, res) => {
 
 
 
-module.exports = {getAllPhotos, uploadPhoto}
+module.exports = {getAllPhotos, uploadPhoto, getPhotosByCategory}
