@@ -5,9 +5,11 @@ import ContactPage from './pages/Contact'
 import LoginPage from './pages/Login'
 import PhotoUploadPage from './pages/Upload'
 import Header from './components/Header/Header'
+import { useAuthStore } from './store/useAuthStore'
 
 const ProtectedRoute = ({ children }) => {
-  if (!hasAuth) {
+  const { authUser } = useAuthStore();
+  if (!authUser) {
     // Redirect to login if not authenticated
     return <Navigate to="/admin/login" replace />;
   }
@@ -29,7 +31,7 @@ function App() {
       <Route path="/category/:category" element={<CategoryPage />} />
       <Route path="/contact" element={<ContactPage />} />
       <Route path="/admin/login" element={<LoginPage />} />
-      <Route path="/admin/upload" element={
+      <Route path="/admin" element={
         <ProtectedRoute>
           <PhotoUploadPage />
         </ProtectedRoute>

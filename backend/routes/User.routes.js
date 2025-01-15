@@ -8,6 +8,7 @@ router.get('/test', (req, res) => {
   
 router.get('/users', userController.getAllUsers);
 router.post('/users/login', userController.login)
+router.post("/users/logout", userController.logout);
 router.post('/users/signup', userController.createUser);
 router.get('/users/:id', userController.getUserById);
 

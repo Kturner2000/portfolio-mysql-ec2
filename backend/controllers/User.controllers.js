@@ -112,6 +112,17 @@ const login = async (req, res) => {
   }
 };
 
+const logout = (req, res) => {
+  try {
+      // clearing the cookie - removing their authentication token stored in a cookie.
+      res.cookie("jwt", "", { maxAge: 0 });
+      res.status(200).json({ message: "Logged out successfully" });
+  } catch (error) {
+      console.log("Error in logout controller", error.message);
+      res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
 
 // Get a user by ID
 const getUserById = async (req, res) => {
@@ -139,4 +150,4 @@ const deleteUserById = async (req, res) => {
 };
 
 
-module.exports = { getAllUsers, createUser ,getUserById, deleteUserById, login };
+module.exports = { getAllUsers, createUser ,getUserById, deleteUserById, login, logout };

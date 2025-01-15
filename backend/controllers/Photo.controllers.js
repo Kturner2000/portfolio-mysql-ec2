@@ -17,64 +17,74 @@ const getAllPhotos = async (req, res) => {
 
   //uploadPhoto
 
-const uploadPhoto = async (req, res) => {
-    const { src, alt, category } = req.body;
+  const uploadPhoto = async (req, res) => {
+    const { photos } = req.body;
 
-    if ( !src || !alt || !category ) {
-        return res.status(400).json({ message: "All fields are required" });
+    if (!Array.isArray(photos) || photos.length === 0) {
+        return res.status(400).json({ message: "Photos array is required" });
     }
 
     try {
+        const uploadedPhotos = [];
 
-        let srcUrl;
+        for (const photo of photos) {
+            const { src, alt, category } = photo;
 
+            if (!src || !alt || !category) {
+                return res.status(400).json({ message: "All fields are required for each photo" });
+            }
 
-    if (src) {
-      // Validate base64 input
-      if (!/^data:image\/[a-zA-Z]+;base64,/.test(src)) {
-        return res.status(400).json({ message: "Invalid base64 image data" });
-      }
+            let srcUrl;
 
-      const buffer = Buffer.from(src.split(",")[1], "base64");
-      const fileType = src.split(";")[0].split("/")[1];
+            if (src) {
+                // Validate base64 input
+                if (!/^data:image\/[a-zA-Z]+;base64,/.test(src)) {
+                    return res.status(400).json({ message: "Invalid base64 image data" });
+                }
 
-      // Validate file type
-      const supportedFileTypes = ["jpeg", "png", "gif", "webp"];
-      if (!supportedFileTypes.includes(fileType)) {
-        return res.status(400).json({ message: "Unsupported file type" });
-      }
+                const buffer = Buffer.from(src.split(",")[1], "base64");
+                const fileType = src.split(";")[0].split("/")[1];
 
-      // Enforce size limit (10MB)
-      if (buffer.length > 10 * 1024 * 1024) {
-        return res.status(400).json({ message: "File size exceeds limit" });
-      }
+                // Validate file type
+                const supportedFileTypes = ["jpeg", "png", "gif", "webp"];
+                if (!supportedFileTypes.includes(fileType)) {
+                    return res.status(400).json({ message: "Unsupported file type" });
+                }
 
-      const params = {
-        Bucket: process.env.AWS_S3_BUCKET_NAME,
-        Key: `${Date.now()}.${fileType}`,
-        Body: buffer,
-        ContentType: fileType === "jpg" ? "image/jpeg" : `image/${fileType}`,
-        ContentEncoding: "base64",
-      };
+                // Enforce size limit (10MB)
+                if (buffer.length > 10 * 1024 * 1024) {
+                    return res.status(400).json({ message: "File size exceeds limit" });
+                }
 
-      const uploadResult = await s3.upload(params).promise();
-      srcUrl = uploadResult.Location;
-    }
-        const newPhoto =  await photoModel.uploadPhoto({
-            src: srcUrl,
-            alt,
-            category,
-         });
+                const params = {
+                    Bucket: process.env.AWS_S3_BUCKET_NAME,
+                    Key: `${Date.now()}.${fileType}`,
+                    Body: buffer,
+                    ContentType: fileType === "jpg" ? "image/jpeg" : `image/${fileType}`,
+                    ContentEncoding: "base64",
+                };
 
-         return res.status(201).json({
-            message: "Photo successfully uploaded",
-            photo: newPhoto
-          });
+                const uploadResult = await s3.upload(params).promise();
+                srcUrl = uploadResult.Location;
+            }
+
+            const newPhoto = await photoModel.uploadPhoto({
+                src: srcUrl,
+                alt,
+                category,
+            });
+
+            uploadedPhotos.push(newPhoto);
+        }
+
+        return res.status(201).json({
+            message: "Photos successfully uploaded",
+            photos: uploadedPhotos
+        });
     } catch (error) {
-        console.error("Error uploading photo:", error.message);
+        console.error("Error uploading photos:", error.message);
         return res.status(500).json({ message: "Internal server error" });
-      }
-      
+    }
 }
 
 const getPhotosByCategory = async (req, res) => {

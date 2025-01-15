@@ -35,8 +35,22 @@ export const usePhotoStore = create((set, get) => ({
           console.error("Error in getPhotos: ", error.message);
           set({ error: error.message, isPhotoLoading: false });
       }
-    }
+    },
 
     // upload photo
+    uploadPhotos: async (photoData) => {
+      set({ isArticleLoading: true, error: null });
+      try {
+        const res = await axiosInstance.post("/photos'upload", { photos: [photoData] });
+        set({ photos: res.data.photos });
+      } catch (err) {
+          console.error("Error creating article:", err);
+          set({ error: err.message });
+          toast.error("Failed to create article");
+      } finally {
+          set({ isArticleLoading: false });
+          toast.success("Article created successfully");
+      }
+  },
 
 }))
