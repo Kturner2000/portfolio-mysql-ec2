@@ -1,4 +1,3 @@
-"use client";
 import { useState, useRef, useCallback, useEffect } from "react";
 import { usePhotoStore } from "../store/usePhotoStore";
 import MasonryGallery from "../components/MasonryGallery/MasonryGallery"; // Import the MasonryGallery component

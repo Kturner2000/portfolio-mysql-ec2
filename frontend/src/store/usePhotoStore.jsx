@@ -16,15 +16,26 @@ export const usePhotoStore = create((set, get) => ({
           photos: page === 1 ? res.data : [...state.photos, ...res.data],
           isPhotoLoading: false 
         }));
-      } catch (err) {
-        console.error("Error in getPhotos: ", err.message);
-        set({ error: err.message, isPhotoLoading: false });
+      } catch (error) {
+        console.error("Error in getPhotos: ", error.message);
+        set({ error: error.message, isPhotoLoading: false });
       }
     },
       
     // get photo by category.
 
-    
+    getPhotosByCategory: async(category) => {
+      set({ isPhotoLoading: true, error: null});
+      
+      try {
+        const res = await axiosInstance.get(`/category/${category}`, category);
+        set({photos : res.data, isPhotoLoading: false})
+      } catch (error) {
+       
+          console.error("Error in getPhotos: ", error.message);
+          set({ error: error.message, isPhotoLoading: false });
+      }
+    }
 
     // upload photo
 
