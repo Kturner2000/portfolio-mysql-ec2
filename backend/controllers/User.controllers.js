@@ -74,6 +74,44 @@ const createUser = async (req, res) => {
     }
 };
 
+const login = async (req, res) => {
+  const { email, password } = req.body;
+
+  try {
+    // Check if email exists
+    const user = await userModel.findUserByEmail(email);
+
+    if (!user) {
+      return res.status(401).json({ message: 'Invalid email or password' });
+    }
+
+    // Verify password
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+
+    if (!isPasswordValid) {
+      return res.status(401).json({ message: 'Invalid email or password' });
+    }
+
+    // Generate JWT token
+    const token = await generateToken(user.id, res);
+
+    // Send successful response
+    res.status(200).json({
+      message: 'Login successful',
+      token, // This will now contain the actual token
+      user: {
+        id: user.id,
+        email: user.email,
+        first_name: user.first_name,
+        last_name: user.last_name
+      }
+    });
+  } catch (err) {
+    console.error('Error during login:', err.message);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
 
 // Get a user by ID
 const getUserById = async (req, res) => {
@@ -99,14 +137,6 @@ const deleteUserById = async (req, res) => {
     res.status(500).send('Server Error');
   }
 };
-const checkAuth = async (req, res) => {
-  try {
-      //send user back to client.
-      res.status(200).json(req.user);
-  } catch (err) {
-      console.log("Error in checkAuth controller", err.message);
-      res.status(500).json({ message: "Internal Server Error" });
-  }
-};
 
-module.exports = { getAllUsers, createUser ,getUserById, deleteUserById, checkAuth };
+
+module.exports = { getAllUsers, createUser ,getUserById, deleteUserById, login };

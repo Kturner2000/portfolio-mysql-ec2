@@ -1,34 +1,44 @@
 import { Eye, EyeOff, Loader2, Mail, Lock } from "lucide-react";
-import { Link } from "react-router-dom";
 import { useAuthStore } from "../store/useAuthStore";
 import { useState } from "react";
-import styles from './styles/login.module.css';
+import styles from "./styles/login.module.css";
+import { useNavigate } from "react-router-dom";
 
 export default function LoginPage() {
-    const [showPassword, setShowPassword] = useState(false);
-    const [formData, setFormData] = useState({
-        email: "",
-        password: "",
-    });
-
     const { login, isLoggingIn } = useAuthStore();
+
+    const [showPassword, setShowPassword] = useState(false);
+    const [formData, setFormData] = useState({ email: "", password: "" });
+    const navigate = useNavigate(); 
 
     function handleSubmit(e) {
         e.preventDefault();
-        login(formData);
+
+        if (!formData.email || !formData.password) {
+            alert("Please fill out all fields"); // Replace with toast or inline error message
+            return;
+        }
+
+        
+        login(formData).then(() => {
+            navigate("/"); // Navigate to the homepage
+        }).catch((err) => {
+            console.error("Login failed:", err);
+        });
+        
+
     }
 
     return (
-        <div>
-            <div className={styles.page_container}>
+        <div className={styles.page_container}>
+            <div className={styles.form_container}>
                 <div>
-                    <div>
-                        <h1>Welcome Back</h1>
-                        <p>Sign in to your account</p>
-                    </div>
+                    <h1>Welcome Back</h1>
+                    <p>Sign in to your account</p>
                 </div>
 
                 <form onSubmit={handleSubmit}>
+                    {/* Email Field */}
                     <div className={styles.email_container}>
                         <label>
                             <span>
@@ -37,9 +47,9 @@ export default function LoginPage() {
                         </label>
                         <div>
                             <input
-                                type='email'
+                                type="email"
                                 className={styles.email_input}
-                                placeholder='you@example.com'
+                                placeholder="you@example.com"
                                 value={formData.email}
                                 onChange={(e) =>
                                     setFormData({
@@ -51,16 +61,18 @@ export default function LoginPage() {
                         </div>
                     </div>
 
-                    <div>
+                    {/* Password Field */}
+                    <div className={styles.password_container}>
                         <label>
                             <span>
                                 <Lock /> Password
                             </span>
                         </label>
-                        <div>
+                        <div className={styles.password_wrapper}>
                             <input
                                 type={showPassword ? "text" : "password"}
-                                placeholder='••••••••'
+                                autoComplete="current-password"
+                                placeholder="••••••••"
                                 value={formData.password}
                                 onChange={(e) =>
                                     setFormData({
@@ -70,7 +82,8 @@ export default function LoginPage() {
                                 }
                             />
                             <button
-                                type='button'
+                                type="button"
+                                className={styles.show_password_button}
                                 onClick={() => setShowPassword(!showPassword)}
                             >
                                 {showPassword ? <EyeOff /> : <Eye />}
@@ -78,7 +91,13 @@ export default function LoginPage() {
                         </div>
                     </div>
 
-                    <button type='submit' disabled={isLoggingIn}>
+                    {/* Submit Button */}
+                    <button
+                        type="submit"
+                        disabled={isLoggingIn}
+                        aria-busy={isLoggingIn}
+                        className={styles.submit_button}
+                    >
                         {isLoggingIn ? (
                             <>
                                 <Loader2 />
@@ -90,12 +109,11 @@ export default function LoginPage() {
                     </button>
                 </form>
 
-                <div>
-                    <p>
-                        Don&apos;t have an account?{" "}
-                        <Link to='/signup'>Create account</Link>
-                    </p>
-                </div>
+                
+            </div>
+
+            <div className={styles.image_container}>
+                {/* Add an image or illustration here */}
             </div>
         </div>
     );
