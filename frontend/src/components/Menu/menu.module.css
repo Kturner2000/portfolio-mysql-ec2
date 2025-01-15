@@ -1,0 +1,23 @@
+.menu {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+.menuItem {
+    color: #333333;
+    text-decoration: none;
+    font-weight: 500;
+    margin-bottom: 20px;
+}
+
+@media (max-width: 568px) {
+    .menu {
+        position: relative;
+        display: flex;
+        flex-direction: row;
+    }
+    .menuItem {
+        margin-left: 20px;
+    }
+}

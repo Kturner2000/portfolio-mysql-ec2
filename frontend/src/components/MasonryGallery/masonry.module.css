@@ -1,0 +1,52 @@
+.masonry_grid {
+    display: flex;
+    margin-left: -16px; /* Adjust the gutter size as needed */
+    width: auto;
+  }
+  
+  .masonry_grid_column {
+    padding-left: 16px; /* Should match the margin-left above */
+    background-clip: padding-box;
+  }
+  
+  .masonry_item {
+    margin-bottom: 16px; /* Vertical gap between items */
+  }
+  
+  .masonry_item_img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 8px; /* Optional: if you want rounded corners */
+    transition: transform 0.3s ease-in-out; /* Optional: for hover effect */
+  }
+  
+  .masonry_item_img:hover {
+    transform: scale(1.05); /* Optional: slight zoom on hover */
+  }
+  
+  /* Responsive adjustments */
+  @media screen and (max-width: 1100px) {
+    .masonry_grid {
+      margin-left: -12px;
+    }
+    .masonry_grid_column {
+      padding-left: 12px;
+    }
+    .masonry_item {
+      margin-bottom: 12px;
+    }
+  }
+  
+  @media screen and (max-width: 700px) {
+    .masonry_grid {
+      margin-left: -8px;
+    }
+    .masonry_grid_column {
+      padding-left: 8px;
+    }
+    .masonry_item {
+      margin-bottom: 8px;
+    }
+  }
+  
