@@ -1,0 +1,84 @@
+.container {
+    padding: 20px;
+}
+
+.imageGrid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.imageBox {
+    aspect-ratio: 1;
+    border: 2px dashed #e5e7eb;
+    border-radius: 8px;
+    position: relative;
+}
+
+.uploadButton {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #6b21a8;
+}
+
+.previewContainer {
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+.preview {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 6px;
+}
+
+.removeButton {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    background: rgba(0, 0, 0, 0.5);
+    border: none;
+    
+    padding: 4px;
+    cursor: pointer;
+    color: white;
+}
+
+.input {
+    position: absolute;
+    bottom: 8px;
+    left: 8px;
+    right: 8px;
+    padding: 4px 8px;
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid #e5e7eb;
+    border-radius: 4px;
+    margin-bottom: 4px;
+}
+
+.input:last-of-type {
+    bottom: 40px;
+}
+
+.submitButton {
+    width: 100%;
+    padding: 12px;
+    background: #6b21a8;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.submitButton:hover {
+    background: #581c87;
+}

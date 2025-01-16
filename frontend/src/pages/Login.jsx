@@ -21,7 +21,7 @@ export default function LoginPage() {
 
         
         login(formData).then(() => {
-            navigate("/"); // Navigate to the homepage
+            navigate("/admin"); // Navigate to the homepage
         }).catch((err) => {
             console.error("Login failed:", err);
         });

@@ -18,56 +18,65 @@ const getAllPhotos = async (req, res) => {
   //uploadPhoto
 
   const uploadPhoto = async (req, res) => {
+    console.log(req.body)
     const { photos } = req.body;
 
+    // Validate photos array
     if (!Array.isArray(photos) || photos.length === 0) {
         return res.status(400).json({ message: "Photos array is required" });
     }
 
-    try {
-        const uploadedPhotos = [];
+    const uploadedPhotos = [];
 
+    try {
         for (const photo of photos) {
             const { src, alt, category } = photo;
 
+            // Validate individual fields
             if (!src || !alt || !category) {
                 return res.status(400).json({ message: "All fields are required for each photo" });
             }
 
-            let srcUrl;
-
-            if (src) {
-                // Validate base64 input
-                if (!/^data:image\/[a-zA-Z]+;base64,/.test(src)) {
-                    return res.status(400).json({ message: "Invalid base64 image data" });
-                }
-
-                const buffer = Buffer.from(src.split(",")[1], "base64");
-                const fileType = src.split(";")[0].split("/")[1];
-
-                // Validate file type
-                const supportedFileTypes = ["jpeg", "png", "gif", "webp"];
-                if (!supportedFileTypes.includes(fileType)) {
-                    return res.status(400).json({ message: "Unsupported file type" });
-                }
-
-                // Enforce size limit (10MB)
-                if (buffer.length > 10 * 1024 * 1024) {
-                    return res.status(400).json({ message: "File size exceeds limit" });
-                }
-
-                const params = {
-                    Bucket: process.env.AWS_S3_BUCKET_NAME,
-                    Key: `${Date.now()}.${fileType}`,
-                    Body: buffer,
-                    ContentType: fileType === "jpg" ? "image/jpeg" : `image/${fileType}`,
-                    ContentEncoding: "base64",
-                };
-
-                const uploadResult = await s3.upload(params).promise();
-                srcUrl = uploadResult.Location;
+            // Validate base64 format
+            if (!/^data:image\/[a-zA-Z]+;base64,/.test(src)) {
+                console.error("Invalid base64 data for src:", src);
+                return res.status(400).json({ message: "Invalid base64 image data" });
             }
 
+            // Convert base64 to buffer
+            const buffer = Buffer.from(src.split(",")[1], "base64");
+
+            const fileType = src.split(";")[0].split("/")[1];
+
+            // Validate file type and size
+            const supportedFileTypes = ["jpeg", "png", "gif", "webp"];
+
+            if (!supportedFileTypes.includes(fileType)) {
+                return res.status(400).json({ message: "Unsupported file type" });
+            }
+            if (buffer.length > 10 * 1024 * 1024) {
+                return res.status(400).json({ message: "File size exceeds limit" });
+            }
+
+            // S3 upload parameters
+            const params = {
+                Bucket: process.env.AWS_S3_BUCKET_NAME,
+                Key: `${Date.now()}.${fileType}`,
+                Body: buffer,
+                ContentType: fileType === "jpg" ? "image/jpeg" : `image/${fileType}`,
+                ContentEncoding: "base64",
+            };
+
+            let srcUrl;
+            try {
+                const uploadResult = await s3.upload(params).promise();
+                srcUrl = uploadResult.Location;
+            } catch (err) {
+                console.error("Error uploading to S3:", err);
+                return res.status(500).json({ message: "Failed to upload photo to S3" });
+            }
+
+            // Save to database
             const newPhoto = await photoModel.uploadPhoto({
                 src: srcUrl,
                 alt,
@@ -79,13 +88,14 @@ const getAllPhotos = async (req, res) => {
 
         return res.status(201).json({
             message: "Photos successfully uploaded",
-            photos: uploadedPhotos
+            photos: uploadedPhotos,
         });
     } catch (error) {
         console.error("Error uploading photos:", error.message);
         return res.status(500).json({ message: "Internal server error" });
     }
-}
+};
+
 
 const getPhotosByCategory = async (req, res) => {
     const { category } = req.params;
