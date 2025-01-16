@@ -5,32 +5,15 @@ import MasonryGallery from "../components/MasonryGallery/MasonryGallery"; // Imp
 export default function Home() {
   const { getAllPhotos, photos, isPhotoLoading, error } = usePhotoStore();
 
-  const [page, setPage] = useState(1);
   const loader = useRef(null);
 
-  const handleObserver = useCallback((entries) => {
-    const target = entries[0];
-    if (target.isIntersecting && !isPhotoLoading) {
-      setPage((prev) => prev + 1);
-    }
-  }, [isPhotoLoading]);
+  
+
+ 
 
   useEffect(() => {
-    const option = {
-      root: null,
-      rootMargin: "20px",
-      threshold: 0
-    };
-    const observer = new IntersectionObserver(handleObserver, option);
-    if (loader.current) observer.observe(loader.current);
-    return () => {
-      if (loader.current) observer.unobserve(loader.current);
-    };
-  }, [handleObserver]);
-
-  useEffect(() => {
-    getAllPhotos(page);
-  }, [getAllPhotos, page]);
+    getAllPhotos();
+  }, [getAllPhotos]);
 
   if (error) {
     return <div style={{ color: "red" }}>Error: {error}</div>;

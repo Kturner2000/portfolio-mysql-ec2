@@ -2,6 +2,7 @@
     display: flex;
     margin-left: -16px; /* Adjust the gutter size as needed */
     width: auto;
+    padding: 20px;
   }
   
   .masonry_grid_column {

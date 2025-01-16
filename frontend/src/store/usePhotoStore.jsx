@@ -8,14 +8,11 @@ export const usePhotoStore = create((set, get) => ({
     isPhotoLoading: false,
     error: null,
 
-    getAllPhotos: async (page) => {
+    getAllPhotos: async () => {
       set({ isPhotoLoading: true, error: null });
       try {
-        const res = await axiosInstance.get(`/photos?page=${page}`);
-        set((state) => ({ 
-          photos: page === 1 ? res.data : [...state.photos, ...res.data],
-          isPhotoLoading: false 
-        }));
+        const res = await axiosInstance.get(`/photos`);
+        set({photos : res.data, isPhotoLoading: false})
       } catch (error) {
         console.error("Error in getPhotos: ", error.message);
         set({ error: error.message, isPhotoLoading: false });

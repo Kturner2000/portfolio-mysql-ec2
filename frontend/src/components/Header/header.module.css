@@ -3,7 +3,7 @@
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); /* Drop shadow */
     position: relative; /* Ensure the shadow is positioned correctly */
     z-index: 10; /* Optional: Adjust stacking order if needed */
-    width: 20vw;
+    width: 15vw;
     padding: 20px 0; /* Add padding for vertical spacing */
     height: 100vh;
     position: fixed;
