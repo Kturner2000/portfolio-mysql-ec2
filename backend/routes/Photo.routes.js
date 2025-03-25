@@ -8,7 +8,7 @@ router.get('/test', (req, res) => {
   
 router.get('/photos', photoController.getAllPhotos);
 router.post('/photos/upload', photoController.uploadPhoto);
-router.get('/photos/category/:category', photoController.getPhotosByCategory)
+router.get('/category/:category', photoController.getPhotosByCategory)
 router.get('/photos/:id', photoController.getPhotoById);
 
 

@@ -1,0 +1,48 @@
+.page_container {
+    display: flex;
+    flex-direction: row;
+    height: 100vh;
+    width: 100vw;
+    position: relative;
+}
+
+.form_container {
+    display: flex;
+    margin-top: 20px;
+    flex-direction: column;
+    align-items: center;
+    width: 30vw;
+    z-index: 1;
+}
+
+.email_container {
+    font-size: 20px;
+}
+
+.email_input {
+    padding-left: 0.25rem;
+    width: 100%;
+}
+
+.image_container {
+    position: relative;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 70vw;
+    background-image: url('/public/login_image.jpg');
+    background-size: 100% 100%;
+background-repeat: no-repeat;
+    
+}
+
+.image_container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-color: rgba(100, 148, 237, 0.349);
+    mix-blend-mode: multiply;
+}

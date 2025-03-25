@@ -1,0 +1,157 @@
+.page_container {
+    display: flex;
+    flex-direction: row;
+    height: 100vh;
+    position: relative;
+
+    
+}
+
+.alert {
+    position: absolute;
+}
+
+.form_container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 35vw;
+    padding: 2rem;
+    padding: 40px;
+}
+
+.form_header {
+    text-align: center;
+    margin-bottom: 2rem;
+    margin-top: 20px;
+}
+
+.form_header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+    margin-top: 20px;
+}
+
+.form_header p {
+    color: #666;
+}
+
+.form {
+    width: 100%;
+    max-width: 400px;
+}
+
+.input_container {
+    margin-bottom: 1.5rem;
+}
+
+.form_label {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+}
+
+.form_label svg {
+    margin-right: 0.5rem;
+}
+
+.form_input,
+.form_textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1rem;
+}
+
+.form_textarea {
+    height: 120px;
+    resize: vertical;
+}
+
+.submit_button {
+    width: 100%;
+    padding: 0.75rem;
+    background-color: #4a90e2;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: background-color 0.3s;
+    margin-bottom: 40px;
+}
+
+.submit_button:hover {
+    background-color: #3a7bc8;
+}
+
+.submit_button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+.submit_button svg {
+    margin-right: 0.5rem;
+}
+
+.icon_spin {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.success_message {
+    margin-top: 1rem;
+    padding: 0.75rem;
+    background-color: #d4edda;
+    color: #155724;
+    border-radius: 4px;
+    text-align: center;
+}
+
+.image_container {
+    position: relative;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 45vw;
+    background-image: url('/public/contact_image.jpg');
+    background-blend-mode: screen;
+    background-size: cover;
+    background-position: center;
+}
+
+.image_container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-color: rgba(74, 144, 226, 0.3);
+    mix-blend-mode: multiply;
+}
+
+@media (max-width: 768px) {
+    .page_container {
+        flex-direction: column;
+    }
+
+    .form_container,
+    .image_container {
+        width: 100vw;
+    }
+
+    .image_container {
+        height: 30vh;
+    }
+}

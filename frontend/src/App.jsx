@@ -1,34 +1,46 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { Routes, Route, Navigate} from 'react-router'
+import Home from './pages/Home'
+import CategoryPage from './pages/Category'
+import ContactPage from './pages/Contact'
+import LoginPage from './pages/Login'
+import PhotoUploadPage from './pages/Upload'
+import Header from './components/Header/Header'
+import { useAuthStore } from './store/useAuthStore'
+
+const ProtectedRoute = ({ children }) => {
+  const { authUser } = useAuthStore();
+  if (!authUser) {
+    // Redirect to login if not authenticated
+    return <Navigate to="/admin/login" replace />;
+  }
+
+  return children;
+};
 
 function App() {
-  const [count, setCount] = useState(0)
+
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    <div className='body'>
+    <Header />
+    <div className='page'>
+
+    
+    <Routes>
+      <Route path="/" element={<Home />} />
+      <Route path="/category/:category" element={<CategoryPage />} />
+      <Route path="/contact" element={<ContactPage />} />
+      <Route path="/admin/login" element={<LoginPage />} />
+      <Route path="/admin" element={
+        <ProtectedRoute>
+          <PhotoUploadPage />
+        </ProtectedRoute>
+      }
+    />
+
+    </Routes> 
+    </div>
+    </div>
   )
 }
 
